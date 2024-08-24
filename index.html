@@ -1,7 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecionamento de Reunião</title>
+    <script>
+        async function redirectToLink() {
+            try {
+                // URL do CSV publicado
+                const sheetUrl = 'https://docs.google.com/spreadsheets/d/1EO_1ICObTSz0IS99xd6DiyDknBkKJZSxDphdRCEDvJM/pub?gid=0&single=true&output=csv';
+                const response = await fetch(sheetUrl);
+                const text = await response.text();
+
+                // O CSV provavelmente tem uma quebra de linha no final, então pegamos a primeira linha e removemos espaços em branco
+                const link = text.split('\n')[0].trim();
+
+                if (link) {
+                    window.location.href = link;
+                } else {
+                    document.body.innerHTML = 'Erro: Não foi possível encontrar o link de redirecionamento.';
+                }
+            } catch (error) {
+                document.body.innerHTML = 'Erro: Falha ao carregar o redirecionamento.';
+            }
+        }
+
+        window.onload = redirectToLink;
+    </script>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+    <p>Redirecionando...</p>
 </body>
 </html>
