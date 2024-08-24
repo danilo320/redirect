@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirecionamento de Reunião</title>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXX-Y"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        // Substitua 'UA-XXXXX-Y' pelo seu ID de rastreamento do Google Analytics
+        gtag('config', 'UA-XXXXX-Y');
+    </script>
+    <!-- Fim do Google Analytics -->
     <script>
         async function redirectToLink() {
             try {
@@ -12,16 +23,24 @@
                 const response = await fetch(sheetUrl);
                 const text = await response.text();
 
-                // O CSV provavelmente tem uma quebra de linha no final, então pegamos a primeira linha e removemos espaços em branco
+                // O CSV provavelmente tem uma quebra de linha no final, então removi espaços em branco
                 const link = text.split('\n')[0].trim();
 
                 if (link) {
+                    // Rastreando o clique antes de redirecionar
+                    gtag('event', 'click', {
+                        'event_category': 'Redirecionamento',
+                        'event_label': link
+                    });
                     window.location.href = link;
                 } else {
-                    document.body.innerHTML = 'Erro: Não foi possível encontrar o link de redirecionamento.';
+                    throw new Error('Link não encontrado');
                 }
             } catch (error) {
-                document.body.innerHTML = 'Erro: Falha ao carregar o redirecionamento.';
+                document.body.innerHTML = 'Erro: Falha ao carregar o redirecionamento. Recarregando em 5 segundos...';
+                setTimeout(() => {
+                    location.reload();
+                }, 5000); // Recarregar a página após 5 segundos
             }
         }
 
